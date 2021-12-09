@@ -13,10 +13,10 @@ Content-Type: application/json
 GET http://localhost:8080/produtos
 
 ### Mostrar produto por id
-GET http://localhost:8080/produtos/2
+GET http://localhost:8080/produtos/1
 
 ### Atualizar o produto
-PUT http://localhost:8080/produtos/2
+PUT http://localhost:8080/produtos/1
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### Atualizar campos do produto
-PATCH  http://localhost:8080/produtos/2
+PATCH  http://localhost:8080/produtos/1
 Content-Type: application/json
 
 {
@@ -35,4 +35,4 @@ Content-Type: application/json
 }
 
 ### Apagar produto
-DELETE http://localhost:8080/produtos/2
+DELETE http://localhost:8080/produtos/1
