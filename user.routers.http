@@ -1,0 +1,49 @@
+### Cadastro de usuarios
+POST http://localhost:8080/usuarios
+Content-Type: application/json
+
+{
+    "name": "Jhon Mart",
+    "email": "jonatas.araripe@mail.com",
+    "gender": "male",
+    "birthday": "1998-04-08",
+    "password": "a2N23_*2@nc!2021"
+}
+
+### Entrar
+POST http://localhost:8080/usuarios/entrar
+Content-Type: application/json
+
+{
+    "email": "jonatas.araripe@mail.com",
+    "password": "a2N23_*2@nc!2021"
+}
+
+### Mostrar todos os usuarios
+GET http://localhost:8080/usuarios
+
+### Mostrar usuario por id
+GET http://localhost:8080/usuarios/1
+
+### Atualizar o usuario
+PUT http://localhost:8080/usuarios/1
+Content-Type: application/json
+
+{
+    "name": "Jonatas Martins",
+    "email": "jonatas.martins@mail.com",
+    "gender": "male",
+    "birthday": "1998-04-08",
+    "password": "a2N23_*2@nc!2021"
+}
+
+### Atualizar campos do usuario
+PATCH  http://localhost:8080/usuarios/1
+Content-Type: application/json
+
+{
+    "password": "a2K23_*2@nc!2021"
+}
+
+### Apagar usuario
+DELETE http://localhost:8080/usuarios/1

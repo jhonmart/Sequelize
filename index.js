@@ -1,7 +1,8 @@
 const express = require('express');
 const Product = require('./controllers/product');
+const User = require('./controllers/user');
 const app = express();
-const PORT = 3000;
+const PORT = 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -12,6 +13,7 @@ app.use((req, resp, next) => {
 });
 
 app.use('/produtos', Product);
+app.use('/usuarios', User);
 
 app.get('/:template?(\.html)?', (req, resp) => {
     const { template } = req.params;
