@@ -4,63 +4,70 @@ const Product = require("../models/product");
 
 router
   .post("/", async function (req, res) {
-    const nome = req.body.name;
-    const tipo = req.body.type;
-    const quantidade = req.body.count;
+    const { name, type, count } = req.body;
 
-    if (!nome || !tipo || !quantidade)
-      res.json({ error: "Dados não recebido" });
-    else {
+    if (name && type && count) {
       const produto = await Product.create(req.body);
-      res.json(produto.getData());
+      return res.json(produto.getData());
     }
+    return res.status(400).json({ error: "Dados não recebido" });
   })
   .get("/:id?", async function (req, res) {
     const id = req.params.id;
 
     if (id) {
       const produto = await Product.findByPk(id);
-      res.json(produto.getData());
+      produto
+        ? res.json(produto.getData())
+        : res.status(404).json({ error: "Produto não encontrado" });
     } else {
       const produtos = await Product.findAll();
-      res.json(produtos.map(produto => produto.getData()));
+      produtos
+        ? res.json(produtos.map((produto) => produto.getData()))
+        : res.status(204).json([]);
     }
   })
   .delete("/:id", async function (req, res) {
     const id = req.params.id;
 
-    if (!id) return res.json({ error: "ID não recebido" });
+    if (!id) return res.status(400).json({ error: "ID não recebido" });
     const produto = await Product.findByPk(id);
 
-    await produto.destroy();
-    res.json({ success: "Produto apagado" });
+    if (produto) {
+      await produto.destroy();
+      res.status(202).json({ success: "Produto apagado" });
+    } else res.status(404).json({ error: "Produto não encontrado" });
   })
   .put("/:id", async function (req, res) {
     const id = req.params.id;
+    const { name, type, count } = req.body;
 
-    if (!id) return res.json({ error: "ID não recebido" });
+    if (!id) return res.status(400).json({ error: "ID não recebido" });
     const produto = await Product.findByPk(id);
 
-    const nome = req.body.name;
-    const tipo = req.body.type;
-    const quantidade = req.body.count;
-
-    if (!nome || !tipo || !quantidade) res.json({ error: "Dados não recebido" });
-    else {
-      produto.set(req.body);
-      await produto.save();
-      res.json(produto.getData());
-    }
+    if (produto) {
+      if (name && type && count) {
+        produto.set(req.body);
+        await produto.save();
+        return res.json(produto.getData());
+      }
+    } else return res.status(404).json({ error: "Produto não encontrado" });
+    res.json({ error: "Dados não recebido" });
   })
   .patch("/:id", async function (req, res) {
     const id = req.params.id;
+    const { name, type, count } = req.body;
 
-    if (!id) return res.json({ error: "ID não recebido" });
-    const produto = await Product.findByPk(id);
-
-    produto.set(req.body);
-    await produto.save();
-    res.json(produto.getData());
+    if (!id) return res.status(400).json({ error: "ID não recebido" });
+    else if (name || type || count) {
+      const produto = await Product.findByPk(id);
+      if (produto) {
+        produto.set(req.body);
+        await produto.save();
+        return res.json(produto.getData());
+      } else return res.status(400).json({ error: "Produto não encontrado" });
+    }
+    res.status(412).json({ error: "Campos não recebidos" });
   });
 
 module.exports = router;
