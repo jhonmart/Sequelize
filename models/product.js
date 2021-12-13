@@ -1,5 +1,5 @@
 const { DataTypes, Model } = require("sequelize");
-const database = require('../src/db');
+const database = require('../config/db');
 
 class Product extends Model {
   getData() {

@@ -1,8 +1,7 @@
-var express = require("express");
-var router = express.Router();
+const { Router } = require("express");
 const User = require("../models/user");
 
-router
+module.exports = Router()
   .post("/", async function (req, res) {
     const { name, email, birthday, password } = req.body;
 
@@ -82,5 +81,3 @@ router
     }
     res.status(412).json({ error: "Campos não recebidos" });
   });
-
-module.exports = router;
