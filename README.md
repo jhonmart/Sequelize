@@ -1,6 +1,6 @@
 ### Project ORM
 
-[![coverage report](https://raw.githubusercontent.com/jhonmart/Sequelize/main/badges/badge-lines.svg?token=AMPN57BI2TS523WGX6ZNZSDBXED6I)](https://github.com/jhonmart/Sequelize/)
+[![coverage report](https://raw.githubusercontent.com/jhonmart/Sequelize/main/badges/badge-lines.svg)](https://github.com/jhonmart/Sequelize/)
 
 ## Basic Commands
 

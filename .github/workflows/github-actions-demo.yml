@@ -31,7 +31,7 @@ jobs:
           path: coverage
           retention-days: 3
 
-      - name: Run unitary test
+      - name: Generation badges
         run: yarn ge:badges
 
       - name: Deploy badges
