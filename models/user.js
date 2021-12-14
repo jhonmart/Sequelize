@@ -27,6 +27,8 @@ User.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      isEmail: true,
+      unique: true
     },
     gender: DataTypes.ENUM("male", "female", "others"),
     password: {

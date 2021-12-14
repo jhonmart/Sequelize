@@ -7,20 +7,20 @@ module.exports = Router()
 
     if (name && email && birthday && password) {
       const usuario = await User.create(req.body);
-      res.status(201).json(usuario.getData());
+      return res.status(201).json(usuario.getData());
     }
-    res.status(400).json({ error: "Dados não recebido" });
+    res.status(400).json({ error: "Campos não recebidos" });
   })
   .post("/entrar", async function (req, res) {
-    const { email, senha } = req.body;
+    const { email, password } = req.body;
 
-    if (email && senha) {
+    if (email && password) {
       const usuario = await User.findOne({ where: { email } });
-      usuario && usuario.validPassword(senha)
+      return usuario && usuario.validPassword(password)
         ? res.json({ success: "Ok", token: "" })
         : res.status(401).json({ error: "Usuário/Senha errados" });
     }
-    res.status(400).json({ error: "Dados não recebido" });
+    res.status(400).json({ error: "Campos não recebidos" });
   })
   .get("/:id?", async function (req, res) {
     const id = req.params.id;
@@ -32,27 +32,22 @@ module.exports = Router()
         : res.status(404).json({ error: "Usuário não encontrado" });
     } else {
       const usuarios = await User.findAll();
-      usuarios
-        ? res.json(usuarios.map((usuario) => usuario.getData()))
-        : res.status(204).json([]);
+      res.json(usuarios.map((usuario) => usuario.getData()));
     }
   })
   .delete("/:id", async function (req, res) {
     const id = req.params.id;
 
-    if (!id) return res.status(400).json({ error: "ID não recebido" });
     const usuario = await User.findByPk(id);
 
     if (usuario) {
       await usuario.destroy();
-      res.status(202).json({ success: "Usuário apagado" });
-    } else res.status(404).json({ error: "Usuário não encontrado" });
+      return res.status(202).json({ success: "Usuário apagado" });
+    }
+    res.status(404).json({ error: "Usuário não encontrado" });
   })
   .put("/:id", async function (req, res) {
-    const id = req.params.id;
-
-    if (!id) return res.status(400).json({ error: "ID não recebido" });
-    const usuario = await User.findByPk(id);
+    const usuario = await User.findByPk(req.params.id);
 
     if (usuario) {
       const { name, email, birthday, password } = req.body;
@@ -62,22 +57,20 @@ module.exports = Router()
         await usuario.save();
         return res.json(usuario.getData());
       }
-      return res.status(412).json({ error: "Dados não recebido" });
+      return res.status(412).json({ error: "Campos não recebidos" });
     }
     res.status(404).json({ error: "Usuário não encontrado" });
   })
   .patch("/:id", async function (req, res) {
-    const id = req.params.id;
     const { name, email, birthday, password } = req.body;
 
-    if (!id) return res.status(400).json({ error: "ID não recebido" });
-    else if (name || email || birthday || password) {
-      const usuario = await User.findByPk(id);
+    if (name || email || birthday || password) {
+      const usuario = await User.findByPk(req.params.id);
       if (usuario) {
         usuario.set(req.body);
         await usuario.save();
         return res.json(usuario.getData());
-      } else return res.status(400).json({ error: "Usuário não encontrado" });
+      } else return res.status(404).json({ error: "Usuário não encontrado" });
     }
     res.status(412).json({ error: "Campos não recebidos" });
   });

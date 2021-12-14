@@ -11,6 +11,28 @@
     "sequelize": "^6.12.0-beta.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js",
+    "test": "cross-env DATABASE_URL='sqlite::memory' jest --coverage",
+    "ge:badges": "jest-coverage-badges --output badges",
+    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
+    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^27.4.5",
+    "jest-coverage-badges": "^1.1.2",
+    "sqlite3": "^5.0.2",
+    "supertest": "^6.1.6"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "coverageReporters": [
+      "json-summary", 
+      "text",
+      "lcov"
+    ]
   }
 }
