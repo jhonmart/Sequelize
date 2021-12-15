@@ -1,0 +1,9 @@
+<ul>
+  <% products.forEach(function(product) { %>
+    <li>
+      <h1><%= product.name %></h1>
+      <h3>Tipo: <strong><%= product.type %></strong></h3>
+      <p>Quantidade: <strong><%= product.count %></strong></p>
+    </li>
+    <% }); %>
+</ul>
