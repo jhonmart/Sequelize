@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('component/header'); %>
+<body>
+    <h1>Pagina inicial</h1>
+    <ul>
+      <% frutas.forEach(function(fruta) { %>
+        <li>
+          <strong><%= fruta %></strong>
+        </li>
+      <% }); %>
+    </ul>
+</body>
+</html>

@@ -161,4 +161,25 @@ describe("Product Endpoints (fail)", () => {
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({ error: "Campos n\u00E3o recebidos" });
   });
+
+  it("GET /produtos/listar should show products list page", async () => {
+    const res = await requestWithSupertest.get("/produtos/listar");
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual("text/html");
+    expect(res.text).toContain("tools");
+  });
+
+  it("GET /produtos/listar/2 should show product 2 page", async () => {
+    const res = await requestWithSupertest.get("/produtos/listar/2");
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual("text/html");
+    expect(res.text).toContain("Lapis");
+  });
+
+  it("GET /produtos/listar/1 not should show product 1 page", async () => {
+    const res = await requestWithSupertest.get("/produtos/listar/1");
+    expect(res.status).toEqual(404);
+    expect(res.type).toEqual("text/html");
+    expect(res.text).toContain("Produto não encontrado");
+  });
 });

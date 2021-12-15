@@ -11,9 +11,8 @@ module.exports = Router()
     }
     return res.status(400).json({ error: "Dados não recebido" });
   })
-  .get("/:id?", async function (req, res) {
+  .get("/:id([0-9])?", async function (req, res) {
     const id = req.params.id;
-
     if (id) {
       const produto = await Product.findByPk(id);
       produto
@@ -58,4 +57,18 @@ module.exports = Router()
       } else return res.status(404).json({ error: "Produto não encontrado" });
     }
     res.status(412).json({ error: "Campos não recebidos" });
+  })
+  .get("/listar/:id?", async function (req, res) {
+    const id = req.params.id;
+    const PATH_TEMPLATE = "../templates/product";
+
+    if (id) {
+      const produto = await Product.findByPk(id);
+      produto
+        ? res.render(PATH_TEMPLATE, { products: [produto] })
+        : res.status(404).send("<h1>Produto não encontrado</h1>");
+    } else {
+      const products = await Product.findAll();
+      res.render(PATH_TEMPLATE, { products });
+    }
   });
