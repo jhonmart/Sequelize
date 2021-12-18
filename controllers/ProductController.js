@@ -1,5 +1,6 @@
 const { Router } = require("express");
-const Product = require("../models/product");
+require("../database");
+const Product = require("../models/Product");
 
 module.exports = Router()
   .post("/", async function (req, res) {

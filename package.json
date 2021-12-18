@@ -1,5 +1,5 @@
 {
-  "name": "ORM",
+  "name": "orm",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -9,17 +9,19 @@
     "express": "^4.17.1",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.12.0-beta.1"
+    "sequelize": "^6.12.0-beta.1",
+    "sequelize-cli": "^6.3.0",
+    "uuidv4": "^6.2.12"
   },
   "scripts": {
-    "start": "node server.js",
-    "test": "cross-env DATABASE_URL='sqlite::memory' jest --coverage",
+    "start": "node server.js 8080",
+    "test": "yarn migrate && jest --coverage",
     "ge:badges": "jest-coverage-badges --output badges",
-    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
-    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
+    "migrate:reset": "npx sequelize db:migrate:undo:all --url $DATABASE_URL && yarn migrate",
+    "migrate": "npx sequelize db:migrate --url $DATABASE_URL",
+    "seed": "npx sequelize db:seed:all --url $DATABASE_URL"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "jest": "^27.4.5",
     "jest-coverage-badges": "^1.1.2",
     "nodemon": "^2.0.15",

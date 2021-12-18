@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "name": "Jhon Mart",
-    "email": "jonatas.araripe@mail.com",
+    "email": "jonatas.araripe2@mail.com",
     "gender": "male",
     "birthday": "1998-04-08",
     "password": "a2N23_*2@nc!2021"
@@ -23,10 +23,10 @@ Content-Type: application/json
 GET http://localhost:8080/usuarios
 
 ### Mostrar usuario por id
-GET http://localhost:8080/usuarios/1
+GET http://localhost:8080/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757
 
 ### Atualizar o usuario
-PUT http://localhost:8080/usuarios/1
+PUT http://localhost:8080/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757
 Content-Type: application/json
 
 {
@@ -38,7 +38,7 @@ Content-Type: application/json
 }
 
 ### Atualizar campos do usuario
-PATCH  http://localhost:8080/usuarios/1
+PATCH  http://localhost:8080/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757
 Content-Type: application/json
 
 {
@@ -46,4 +46,4 @@ Content-Type: application/json
 }
 
 ### Apagar usuario
-DELETE http://localhost:8080/usuarios/1
+DELETE http://localhost:8080/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757

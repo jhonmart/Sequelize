@@ -1,6 +1,6 @@
 const express = require("express");
-const Product = require("./controllers/product");
-const User = require("./controllers/user");
+const ProductController = require("./controllers/ProductController");
+const UserController = require("./controllers/UserController");
 var fs = require("fs");
 const app = express();
 
@@ -15,8 +15,8 @@ app.use((req, res, next) => {
     : next();
 });
 
-app.use("/produtos", Product);
-app.use("/usuarios", User);
+app.use("/produtos", ProductController);
+app.use("/usuarios", UserController);
 
 app.get("/:template?", (req, res) => {
   const { template } = req.params;
