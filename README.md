@@ -1,6 +1,12 @@
 ### Project ORM
 
-[![coverage report](https://raw.githubusercontent.com/jhonmart/Sequelize/main/badges/badge-lines.svg)](https://github.com/jhonmart/Sequelize/)
+<a href="https://github.com/jhonmart/Sequelize/commits">
+  <img align="left" src="https://raw.githubusercontent.com/jhonmart/Sequelize/main/badges/badge-functions.svg">
+  <img align="left" src="https://raw.githubusercontent.com/jhonmart/Sequelize/main/badges/badge-lines.svg">
+  <img align="left" src="https://raw.githubusercontent.com/jhonmart/Sequelize/main/badges/badge-branches.svg">
+</a>
+<br>
+
 
 ## Basic Commands
 
@@ -17,6 +23,19 @@ docker-compose build
 ```sh
 docker-compose up -d
 ```
+
+#### Migrate container
+
+```sh
+docker-compose exec web yarn migrate
+```
+
+#### Load initialdata
+
+```sh
+docker-compose exec web yarn seed
+```
+
 ### Non-Docker Commands
 
 #### Create your database and set DATABASE_URL
@@ -37,4 +56,16 @@ yarn install
 
 ```sh
 yarn start
+```
+
+#### Migrate container
+
+```sh
+yarn migrate
+```
+
+#### Load initialdata
+
+```sh
+yarn seed
 ```
