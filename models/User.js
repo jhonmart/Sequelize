@@ -1,7 +1,5 @@
 "use strict";
 const { Model, Sequelize } = require("sequelize");
-const bcrypt = require("bcrypt");
-const uuid = require('uuid');
 
 class User extends Model {
   static init(sequelize) {
@@ -26,22 +24,7 @@ class User extends Model {
       },
       {
         sequelize,
-        tableName: "users",
-        hooks: {
-          beforeCreate: async (user) => {
-            user.id = uuid.v4();
-            if (user.password) {
-              const salt = await bcrypt.genSaltSync(10, "a");
-              user.password = bcrypt.hashSync(user.password, salt);
-            }
-          },
-          beforeUpdate: async (user) => {
-            if (user.password) {
-              const salt = await bcrypt.genSaltSync(10, "a");
-              user.password = bcrypt.hashSync(user.password, salt);
-            }
-          },
-        },
+        tableName: "users"
       }
     );
   }
@@ -54,10 +37,6 @@ class User extends Model {
       gender: this.gender,
       birthday: this.birthday,
     };
-  }
-
-  validPassword(password) {
-    return bcrypt.compareSync(password, this.password);
   }
 }
 

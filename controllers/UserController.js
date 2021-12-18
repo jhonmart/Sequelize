@@ -1,14 +1,24 @@
+const uuid = require('uuid');
+const bcrypt = require("bcrypt");
 const { Router } = require("express");
 require("../database");
 const User = require("../models/User");
+const UUID_FORMAT = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
 module.exports = Router()
   .post("/", async function (req, res) {
     const { name, email, birthday, password } = req.body;
 
     if (name && email && birthday && password) {
-      const usuario = await User.create(req.body);
-      return res.status(201).json(usuario.getData());
+      try {
+        const salt = await bcrypt.genSaltSync(10, "a");
+        req.body.id = uuid.v4();
+        req.body.password = bcrypt.hashSync(req.body.password, salt);
+        const usuario = await User.create(req.body);
+        return res.status(201).json(usuario.getData());
+      } catch (error) {
+        return res.status(400).json(error.errors.map(item => item.message));
+      }
     }
     res.status(400).json({ error: "Campos não recebidos" });
   })
@@ -17,13 +27,13 @@ module.exports = Router()
 
     if (email && password) {
       const usuario = await User.findOne({ where: { email } });
-      return usuario && usuario.validPassword(password)
+      return usuario && bcrypt.compareSync(password, usuario.password)
         ? res.json({ success: "Ok", token: "" })
         : res.status(401).json({ error: "Usuário/Senha errados" });
     }
     res.status(400).json({ error: "Campos não recebidos" });
   })
-  .get("/:id?", async function (req, res) {
+  .get(`/:id(${UUID_FORMAT})?`, async function (req, res) {
     const id = req.params.id;
 
     if (id) {
@@ -36,7 +46,7 @@ module.exports = Router()
       res.json(usuarios.map((usuario) => usuario.getData()));
     }
   })
-  .delete("/:id", async function (req, res) {
+  .delete(`/:id(${UUID_FORMAT})`, async function (req, res) {
     const id = req.params.id;
 
     const usuario = await User.findByPk(id);
@@ -47,13 +57,15 @@ module.exports = Router()
     }
     res.status(404).json({ error: "Usuário não encontrado" });
   })
-  .put("/:id", async function (req, res) {
+  .put(`/:id(${UUID_FORMAT})`, async function (req, res) {
     const usuario = await User.findByPk(req.params.id);
 
     if (usuario) {
       const { name, email, birthday, password } = req.body;
 
       if (name && email && birthday && password) {
+        const salt = await bcrypt.genSaltSync(10, "a");
+        req.body.password = bcrypt.hashSync(req.body.password, salt);
         usuario.set(req.body);
         await usuario.save();
         return res.json(usuario.getData());
@@ -62,12 +74,16 @@ module.exports = Router()
     }
     res.status(404).json({ error: "Usuário não encontrado" });
   })
-  .patch("/:id", async function (req, res) {
+  .patch(`/:id(${UUID_FORMAT})`, async function (req, res) {
     const { name, email, birthday, password } = req.body;
 
     if (name || email || birthday || password) {
       const usuario = await User.findByPk(req.params.id);
       if (usuario) {
+        if (req.body.password) {
+          const salt = await bcrypt.genSaltSync(10, "a");
+          req.body.password = bcrypt.hashSync(req.body.password, salt);
+        }
         usuario.set(req.body);
         await usuario.save();
         return res.json(usuario.getData());

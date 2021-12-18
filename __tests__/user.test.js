@@ -13,8 +13,8 @@ describe("User Endpoints (success)", () => {
     });
     expect(res.status).toEqual(201);
     expect(res.type).toEqual(expect.stringContaining("json"));
+    delete res.body.id;
     expect(res.body).toEqual({
-      id: 1,
       name: "Jhon Mart",
       email: "jonatas.araripe@mail.com",
       gender: "male",
@@ -39,24 +39,24 @@ describe("User Endpoints (success)", () => {
     const res = await requestWithSupertest.get("/usuarios");
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
-    expect(res.body.length).toEqual(1);
+    expect(res.body.length).toEqual(4);
   });
 
-  it("GET /usuarios/1 should show first user", async () => {
-    const res = await requestWithSupertest.get("/usuarios/1");
+  it("GET /usuarios/UUID should show first user", async () => {
+    const res = await requestWithSupertest.get("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757");
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({
-      id: 1,
-      name: "Jhon Mart",
-      email: "jonatas.araripe@mail.com",
+      id: "75b68de2-575a-4c45-aaf1-880fd8e4b757",
+      name: "John",
       gender: "male",
-      birthday: "1998-04-08T00:00:00.000Z",
+      birthday: "1998-02-16T00:00:00.000Z",
+      email: "jhon.mart@mail.com",
     });
   });
 
-  it("PUT /usuarios/1 update all data first user", async () => {
-    const res = await requestWithSupertest.put("/usuarios/1").send({
+  it("PUT /usuarios/UUID update all data first user", async () => {
+    const res = await requestWithSupertest.put("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757").send({
       name: "Jhon Martins",
       email: "jonatas.martins@mail.com",
       gender: "male",
@@ -66,7 +66,7 @@ describe("User Endpoints (success)", () => {
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({
-      id: 1,
+      id: "75b68de2-575a-4c45-aaf1-880fd8e4b757",
       name: "Jhon Martins",
       email: "jonatas.martins@mail.com",
       gender: "male",
@@ -74,14 +74,29 @@ describe("User Endpoints (success)", () => {
     });
   });
 
-  it("PATCH /usuarios/1 update field first user", async () => {
-    const res = await requestWithSupertest.patch("/usuarios/1").send({
+  it("PATCH /usuarios/UUID update field first user", async () => {
+    const res = await requestWithSupertest.patch("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757").send({
+      password: "macaco2012",
+    });
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual(expect.stringContaining("json"));
+    expect(res.body).toEqual({
+      id: '75b68de2-575a-4c45-aaf1-880fd8e4b757',
+      name: "Jhon Martins",
+      email: "jonatas.martins@mail.com",
+      gender: "male",
+      birthday: "1998-04-08T00:00:00.000Z",
+    });
+  });
+
+  it("PATCH /usuarios/UUID update field first user", async () => {
+    const res = await requestWithSupertest.patch("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757").send({
       name: "Jonatas Martins",
     });
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({
-      id: 1,
+      id: '75b68de2-575a-4c45-aaf1-880fd8e4b757',
       name: "Jonatas Martins",
       email: "jonatas.martins@mail.com",
       gender: "male",
@@ -89,8 +104,8 @@ describe("User Endpoints (success)", () => {
     });
   });
 
-  it("DELETE /usuarios/1 delete first user", async () => {
-    const res = await requestWithSupertest.delete("/usuarios/1");
+  it("DELETE /usuarios/UUID delete first user", async () => {
+    const res = await requestWithSupertest.delete("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757");
     expect(res.status).toEqual(202);
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({ success: "Usuário apagado" });
@@ -98,26 +113,22 @@ describe("User Endpoints (success)", () => {
 });
 
 describe("User Endpoints (fail)", () => {
-  it("POST /usuarios create second user", async () => {
+  it("POST /usuarios 400 create user", async () => {
     const res = await requestWithSupertest.post("/usuarios").send({
-      name: "Alex Stan",
-      email: "alex.stan@mail.com",
+      name: "Jhon Mart",
+      email: "jonatas.araripe@mail.com",
       gender: "male",
-      birthday: "1972-02-18",
-      password: "ahsd&2h1c*@",
+      birthday: "1998-04-08",
+      password: "a2N23_*2@nc!2021",
     });
-    expect(res.status).toEqual(201);
+    expect(res.status).toEqual(400);
     expect(res.type).toEqual(expect.stringContaining("json"));
-    expect(res.body).toEqual({
-      id: 2,
-      name: "Alex Stan",
-      email: "alex.stan@mail.com",
-      gender: "male",
-      birthday: "1972-02-18T00:00:00.000Z",
-    });
+    expect(res.body).toEqual([
+      "email must be unique"
+    ]);
   });
 
-  it("POST /usuarios/entrar 401 login valid", async () => {
+  it("POST /usuarios/entrar 401 login invalid", async () => {
     const res = await requestWithSupertest.post("/usuarios/entrar").send({
       email: "alex.stan@mail.com",
       password: "a2N23_*2@nc!2021",
@@ -143,8 +154,8 @@ describe("User Endpoints (fail)", () => {
     expect(res.body).toEqual({ error: "Campos n\u00E3o recebidos" });
   });
 
-  it("PUT /usuarios/1 404 update all data first user", async () => {
-    const res = await requestWithSupertest.put("/usuarios/1").send({
+  it("PUT /usuarios/UUID 404 update all data first user", async () => {
+    const res = await requestWithSupertest.put("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b712").send({
       name: "Alex Stan",
       email: "alex.stan@mail.com",
       gender: "male",
@@ -155,29 +166,29 @@ describe("User Endpoints (fail)", () => {
     expect(res.body).toEqual({ error: "Usuário n\u00E3o encontrado" });
   });
 
-  it("GET /usuarios/1 404 should show first user", async () => {
-    const res = await requestWithSupertest.get("/usuarios/1");
+  it("GET /usuarios/UUID 404 should show first user", async () => {
+    const res = await requestWithSupertest.get("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b712");
     expect(res.status).toEqual(404);
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({ error: "Usuário n\u00E3o encontrado" });
   });
 
-  it("DELETE /usuarios/1 404 delete first user", async () => {
-    const res = await requestWithSupertest.delete("/usuarios/1");
+  it("DELETE /usuarios/UUID 404 delete first user", async () => {
+    const res = await requestWithSupertest.delete("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b712");
     expect(res.status).toEqual(404);
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({ error: "Usuário n\u00E3o encontrado" });
   });
 
-  it("PUT /usuarios/2 400 update all data first user", async () => {
-    const res = await requestWithSupertest.put("/usuarios/2");
+  it("PUT /usuarios/UUID 400 update all data second user", async () => {
+    const res = await requestWithSupertest.put("/usuarios/377b95f9-1bf2-46e8-ba59-5d017740c9ed");
     expect(res.status).toEqual(412);
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({ error: "Campos n\u00E3o recebidos" });
   });
 
-  it("PATCH /usuarios/1 404 update field first user", async () => {
-    const res = await requestWithSupertest.patch("/usuarios/1").send({
+  it("PATCH /usuarios/UUID 404 update field first user", async () => {
+    const res = await requestWithSupertest.patch("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757").send({
       name: "Alex Stan"
     });
     expect(res.status).toEqual(404);
@@ -185,8 +196,8 @@ describe("User Endpoints (fail)", () => {
     expect(res.body).toEqual({ error: "Usuário n\u00E3o encontrado" });
   });
 
-  it("PUT /usuarios/1 404 update all data first user", async () => {
-    const res = await requestWithSupertest.put("/usuarios/1").send({
+  it("PUT /usuarios/UUID 404 update all data first user", async () => {
+    const res = await requestWithSupertest.put("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757").send({
       name: "Alex Stan",
       email: "alex.stan@mail.com",
       gender: "male",
@@ -197,8 +208,8 @@ describe("User Endpoints (fail)", () => {
     expect(res.body).toEqual({ error: "Usuário n\u00E3o encontrado" });
   });
 
-  it("PATCH /usuarios/1 412 update field first user", async () => {
-    const res = await requestWithSupertest.patch("/usuarios/1");
+  it("PATCH /usuarios/UUID 412 update field first user", async () => {
+    const res = await requestWithSupertest.patch("/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757");
     expect(res.status).toEqual(412);
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toEqual({ error: "Campos n\u00E3o recebidos" });

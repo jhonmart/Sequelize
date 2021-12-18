@@ -15,10 +15,11 @@
   },
   "scripts": {
     "start": "node server.js 8080",
-    "test": "DATABASE_URL='sqlite::memory' jest --coverage",
+    "test": "yarn migrate && jest --coverage",
     "ge:badges": "jest-coverage-badges --output badges",
-    "migrate:reset": "npx sequelize db:migrate:undo:all --url $DATABASE_URL && npm run migrate",
-    "migrate": "npx sequelize db:migrate --url $DATABASE_URL"
+    "migrate:reset": "npx sequelize db:migrate:undo:all --url $DATABASE_URL && yarn migrate",
+    "migrate": "npx sequelize db:migrate --url $DATABASE_URL",
+    "seed": "npx sequelize db:seed:all --url $DATABASE_URL"
   },
   "devDependencies": {
     "jest": "^27.4.5",
