@@ -1,17 +1,5 @@
 version: '2'
 services:
-  web:
-    build: .
-    command: yarn start
-    volumes:
-      - .:/usr/src/app/
-      - /usr/src/app/node_modules
-    ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-    environment:
-      DATABASE_URL: postgres://bradesco@postgres/bradesco
   postgres:
     image: postgres:9.6.2-alpine
     ports:
@@ -19,3 +7,20 @@ services:
     environment:
       POSTGRES_USER: bradesco
       POSTGRES_DB: bradesco
+  web:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: ["start", "8080"]
+    volumes:
+      - .:/usr/src/app/
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:8080"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://bradesco@postgres/bradesco
+    # Make interactive
+    stdin_open: true
+    tty: true
