@@ -1,12 +1,46 @@
 version: '2'
+
+volumes:
+  db-data:
+
+networks:
+  elastic:
+    driver: bridge
+
 services:
+  elasticsearch:
+    # https://hub.docker.com/_/elasticsearch
+    image: "elasticsearch:7.10.1"
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elastic
+
+  kibana:
+    # https://hub.docker.com/_/kibana
+    image: kibana:7.10.1
+    ports:
+      - "5601:5601"
+
   postgres:
     image: postgres:9.6.2-alpine
     ports:
       - "5432:5432"
+    volumes:
+      - db-data:/pgdata
     environment:
       POSTGRES_USER: bradesco
       POSTGRES_DB: bradesco
+      PGDATA: /pgdata
+    networks:
+      - elastic
+
   web:
     build:
       dockerfile: Dockerfile
@@ -18,9 +52,13 @@ services:
     ports:
       - "3000:8080"
     depends_on:
+      - elasticsearch
       - postgres
+    networks:
+      - elastic
     environment:
-      DATABASE_URL: postgres://bradesco@postgres/bradesco
+      DATABASE_URL: postgres://bradesco@postgres/bradesco      
+      ELASTIC_SEARCH_HOST: orm_elasticsearch_1:9200
     # Make interactive
     stdin_open: true
     tty: true

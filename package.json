@@ -6,6 +6,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "ejs": "^3.1.6",
+    "elasticsearch": "^16.7.2",
     "express": "^4.17.1",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
@@ -14,12 +15,13 @@
     "uuidv4": "^6.2.12"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node src/server.js",
     "test": "yarn migrate && jest --coverage",
     "ge:badges": "jest-coverage-badges --output badges",
     "migrate:reset": "npx sequelize db:migrate:undo:all --url $DATABASE_URL && yarn migrate",
     "migrate": "npx sequelize db:migrate --url $DATABASE_URL",
-    "seed": "npx sequelize db:seed:all --url $DATABASE_URL"
+    "seed": "npx sequelize db:seed:all --url $DATABASE_URL",
+    "index:elasticsearch": "node src/utils/reindex_elasticsearch.js"
   },
   "devDependencies": {
     "jest": "^27.4.5",

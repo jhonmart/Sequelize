@@ -1,5 +1,6 @@
 const uuid = require('uuid');
 const bcrypt = require("bcrypt");
+const { client } = require("../services/elasticsearch");
 const { Router } = require("express");
 require("../database");
 const User = require("../models/User");
@@ -90,4 +91,20 @@ module.exports = Router()
       } else return res.status(404).json({ error: "Usuário não encontrado" });
     }
     res.status(412).json({ error: "Campos não recebidos" });
+  })
+  .get("/pesquisar/:search", async function (req, res) {
+    try {
+      const searchText = req.params.search;
+      const response = await client.search({
+        index: "elastic_user",
+        body: {
+          query: {
+            wildcard: { name: `*${searchText.trim()}*` },
+          },
+        },
+      });
+      return res.json(response.hits.hits.map(data => data._source));
+    } catch (error) {
+      return res.status(400).send(error);
+    }
   });

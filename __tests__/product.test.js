@@ -1,4 +1,4 @@
-const server = require("../index.js");
+const server = require("../src/index.js");
 const supertest = require("supertest");
 const requestWithSupertest = supertest(server);
 

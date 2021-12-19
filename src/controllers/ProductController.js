@@ -1,6 +1,8 @@
 const { Router } = require("express");
+const path = require("path");
 require("../database");
 const Product = require("../models/Product");
+const { client } = require("../services/elasticsearch");
 
 module.exports = Router()
   .post("/", async function (req, res) {
@@ -8,6 +10,15 @@ module.exports = Router()
 
     if (name && type && count) {
       const produto = await Product.create(req.body);
+      client.index({
+        index: "elastic_product",
+        type: "type_elastic_product",
+        body: {
+          name,
+          type,
+          count,
+        },
+      });
       return res.status(201).json(produto.getData());
     }
     return res.status(400).json({ error: "Dados não recebido" });
@@ -61,7 +72,12 @@ module.exports = Router()
   })
   .get("/listar/:id?", async function (req, res) {
     const id = req.params.id;
-    const PATH_TEMPLATE = "../templates/product";
+    const PATH_TEMPLATE = path.resolve(
+      __dirname,
+      "../",
+      "templates",
+      "product"
+    );
 
     if (id) {
       const produto = await Product.findByPk(id);
@@ -71,5 +87,21 @@ module.exports = Router()
     } else {
       const products = await Product.findAll();
       res.render(PATH_TEMPLATE, { products });
+    }
+  })
+  .get("/pesquisar/:search", async function (req, res) {
+    try {
+      const searchText = req.params.search;
+      const response = await client.search({
+        index: "elastic_product",
+        body: {
+          query: {
+            wildcard: { name: `*${searchText.trim()}*` },
+          },
+        },
+      });
+      return res.json(response.hits.hits.map(data => data._source));
+    } catch (error) {
+      return res.status(400).send(error);
     }
   });
