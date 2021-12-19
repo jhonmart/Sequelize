@@ -16,12 +16,11 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "test": "yarn migrate && jest --coverage",
+    "test": "jest --coverage",
     "ge:badges": "jest-coverage-badges --output badges",
     "migrate:reset": "npx sequelize db:migrate:undo:all --url $DATABASE_URL && yarn migrate",
     "migrate": "npx sequelize db:migrate --url $DATABASE_URL",
-    "seed": "npx sequelize db:seed:all --url $DATABASE_URL",
-    "index:elasticsearch": "node src/utils/reindex_elasticsearch.js"
+    "seed": "npx sequelize db:seed:all --url $DATABASE_URL"
   },
   "devDependencies": {
     "jest": "^27.4.5",

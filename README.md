@@ -1,5 +1,6 @@
 ### Project ORM
 
+[![Deploy project](https://github.com/jhonmart/Sequelize/actions/workflows/github-actions-demo.yml/badge.svg)](https://github.com/jhonmart/Sequelize/actions/workflows/github-actions-demo.yml)
 <a href="https://github.com/jhonmart/Sequelize/commits">
   <img align="left" src="https://raw.githubusercontent.com/jhonmart/Sequelize/main/badges/badge-functions.svg">
   <img align="left" src="https://raw.githubusercontent.com/jhonmart/Sequelize/main/badges/badge-lines.svg">
@@ -36,6 +37,12 @@ docker-compose exec web yarn migrate
 docker-compose exec web yarn seed
 ```
 
+#### Reindex data
+
+```sh
+docker-compose exec web yarn index:elasticsearch
+```
+
 ### Non-Docker Commands
 
 #### Create your database and set DATABASE_URL
@@ -68,4 +75,10 @@ yarn migrate
 
 ```sh
 yarn seed
+```
+
+#### Reindex data
+
+```sh
+yarn index:elasticsearch
 ```

@@ -27,6 +27,8 @@ services:
     image: kibana:7.10.1
     ports:
       - "5601:5601"
+    networks:
+      - elastic
 
   postgres:
     image: postgres:9.6.2-alpine
@@ -57,7 +59,7 @@ services:
     networks:
       - elastic
     environment:
-      DATABASE_URL: postgres://bradesco@postgres/bradesco      
+      DATABASE_URL: postgres://bradesco@postgres/bradesco
       ELASTIC_SEARCH_HOST: orm_elasticsearch_1:9200
     # Make interactive
     stdin_open: true

@@ -1,10 +1,11 @@
-const uuid = require('uuid');
+const { v4:uuid } = require("uuid");
 const bcrypt = require("bcrypt");
 const { client } = require("../services/elasticsearch");
 const { Router } = require("express");
 require("../database");
 const User = require("../models/User");
-const UUID_FORMAT = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+const UUID_FORMAT =
+  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
 module.exports = Router()
   .post("/", async function (req, res) {
@@ -13,12 +14,17 @@ module.exports = Router()
     if (name && email && birthday && password) {
       try {
         const salt = await bcrypt.genSaltSync(10, "a");
-        req.body.id = uuid.v4();
+        req.body.id = uuid();
         req.body.password = bcrypt.hashSync(req.body.password, salt);
         const usuario = await User.create(req.body);
+        await client.index({
+          index: "elastic_user",
+          type: "type_elastic_user",
+          body: usuario.getData(),
+        });
         return res.status(201).json(usuario.getData());
       } catch (error) {
-        return res.status(400).json(error.errors.map(item => item.message));
+        return res.status(400).json(error.errors.map((item) => item.message));
       }
     }
     res.status(400).json({ error: "Campos não recebidos" });
@@ -93,18 +99,14 @@ module.exports = Router()
     res.status(412).json({ error: "Campos não recebidos" });
   })
   .get("/pesquisar/:search", async function (req, res) {
-    try {
-      const searchText = req.params.search;
-      const response = await client.search({
-        index: "elastic_user",
-        body: {
-          query: {
-            wildcard: { name: `*${searchText.trim()}*` },
-          },
+    const searchText = req.params.search;
+    const response = await client.search({
+      index: "elastic_user",
+      body: {
+        query: {
+          wildcard: { name: `*${searchText.trim()}*` },
         },
-      });
-      return res.json(response.hits.hits.map(data => data._source));
-    } catch (error) {
-      return res.status(400).send(error);
-    }
+      },
+    });
+    return res.json(response.hits.hits.map((data) => data._source));
   });
