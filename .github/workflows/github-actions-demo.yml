@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      ELASTIC_SEARCH_HOST: localhost:9200
 
     services:
       postgres:
@@ -27,6 +28,13 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+      elasticsearch:
+        image: "elasticsearch:7.10.1"
+        ports:
+          - 9200:9200
+        env:
+          discovery.type: single-node
 
     steps:
       - uses: actions/checkout@v2
@@ -46,7 +54,7 @@ jobs:
 
       - name: Run unitary test 
         run: yarn test
-      
+
       - name: Config test
         uses: actions/upload-artifact@v2
         with:

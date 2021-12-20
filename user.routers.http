@@ -10,6 +10,9 @@ Content-Type: application/json
     "password": "a2N23_*2@nc!2021"
 }
 
+### Pesquisar no elasticsearch produtos
+GET http://localhost:8080/usuarios/pesquisar/jho
+
 ### Entrar
 POST http://localhost:8080/usuarios/entrar
 Content-Type: application/json

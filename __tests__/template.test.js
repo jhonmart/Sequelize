@@ -1,4 +1,4 @@
-const server = require("../index.js");
+const server = require("../src/index.js");
 const supertest = require("supertest");
 var fs = require("fs");
 const requestWithSupertest = supertest(server);
@@ -8,7 +8,7 @@ describe("Template Endpoints", () => {
     const res = await requestWithSupertest.get("/");
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("html"));
-    fs.readFileSync("templates/index.ejs", "utf-8", (result) => {
+    fs.readFileSync("src/templates/index.ejs", "utf-8", (result) => {
       expect(res.body).toEqual(result);
     });
   });
@@ -22,7 +22,7 @@ describe("Template Endpoints", () => {
     const res = await requestWithSupertest.get("/user");
     expect(res.status).toEqual(302);
     expect(res.type).toEqual("text/plain");
-    fs.readFileSync("templates/index.ejs", "utf-8", (result) => {
+    fs.readFileSync("src/templates/index.ejs", "utf-8", (result) => {
       expect(res.body).toEqual(result);
     });
   });

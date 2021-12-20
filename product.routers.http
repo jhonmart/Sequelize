@@ -3,11 +3,14 @@ POST http://localhost:8080/produtos
 Content-Type: application/json
 
 {
-    "name": "Borracha",
+    "name": "Borracha 2",
     "description": "Boa para apagar desenhos a lápis",
     "type": "tools",
     "count": 5
 }
+
+### Pesquisar no elasticsearch produtos
+GET http://localhost:8080/produtos/pesquisar/borra
 
 ### Mostrar todos os produtos
 GET http://localhost:8080/produtos
