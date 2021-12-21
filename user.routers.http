@@ -1,5 +1,5 @@
 ### Cadastro de usuarios
-POST http://localhost:8080/usuarios
+POST http://localhost:8080/usuario
 Content-Type: application/json
 
 {
@@ -11,10 +11,10 @@ Content-Type: application/json
 }
 
 ### Pesquisar no elasticsearch produtos
-GET http://localhost:8080/usuarios/pesquisar/jho
+GET http://localhost:8080/usuario/pesquisar/jho
 
 ### Entrar
-POST http://localhost:8080/usuarios/entrar
+POST http://localhost:8080/usuario/entrar
 Content-Type: application/json
 
 {
@@ -23,13 +23,13 @@ Content-Type: application/json
 }
 
 ### Mostrar todos os usuarios
-GET http://localhost:8080/usuarios
+GET http://localhost:8080/usuario
 
 ### Mostrar usuario por id
-GET http://localhost:8080/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757
+GET http://localhost:8080/usuario/75b68de2-575a-4c45-aaf1-880fd8e4b757
 
 ### Atualizar o usuario
-PUT http://localhost:8080/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757
+PUT http://localhost:8080/usuario/75b68de2-575a-4c45-aaf1-880fd8e4b757
 Content-Type: application/json
 
 {
@@ -41,7 +41,7 @@ Content-Type: application/json
 }
 
 ### Atualizar campos do usuario
-PATCH  http://localhost:8080/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757
+PATCH  http://localhost:8080/usuario/75b68de2-575a-4c45-aaf1-880fd8e4b757
 Content-Type: application/json
 
 {
@@ -49,4 +49,4 @@ Content-Type: application/json
 }
 
 ### Apagar usuario
-DELETE http://localhost:8080/usuarios/75b68de2-575a-4c45-aaf1-880fd8e4b757
+DELETE http://localhost:8080/usuario/75b68de2-575a-4c45-aaf1-880fd8e4b757
