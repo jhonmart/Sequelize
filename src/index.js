@@ -1,6 +1,9 @@
 const express = require("express");
+const path = require('path');
 const ProductController = require("./controllers/ProductController");
 const UserController = require("./controllers/UserController");
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require(path.resolve(__dirname, 'services', 'swagger_output.json'));
 var fs = require("fs");
 const app = express();
 
@@ -15,8 +18,9 @@ app.use((req, res, next) => {
     : next();
 });
 
-app.use("/produtos", ProductController);
-app.use("/usuarios", UserController);
+app.use("/produto", ProductController);
+app.use("/usuario", UserController);
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.get("/:template?", (req, res) => {
   const { template } = req.params;

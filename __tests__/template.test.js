@@ -26,4 +26,10 @@ describe("Template Endpoints", () => {
       expect(res.body).toEqual(result);
     });
   });
+  it("GET /doc should show doc page", async () => {
+    const res = await requestWithSupertest.get("/doc");
+    expect(res.status).toEqual(301);
+    expect(res.type).toEqual("text/html");
+    expect(res.text).toContain("doc");
+  });
 });

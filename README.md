@@ -37,12 +37,6 @@ docker-compose exec web yarn migrate
 docker-compose exec web yarn seed
 ```
 
-#### Reindex data
-
-```sh
-docker-compose exec web yarn index:elasticsearch
-```
-
 ### Non-Docker Commands
 
 #### Create your database and set DATABASE_URL
@@ -75,10 +69,4 @@ yarn migrate
 
 ```sh
 yarn seed
-```
-
-#### Reindex data
-
-```sh
-yarn index:elasticsearch
 ```

@@ -12,7 +12,9 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.12.0-beta.1",
     "sequelize-cli": "^6.3.0",
-    "uuidv4": "^6.2.12"
+    "uuidv4": "^6.2.12",
+    "swagger-autogen": "^2.17.2",
+    "swagger-ui-express": "^4.1.4"
   },
   "scripts": {
     "start": "node src/server.js",
@@ -20,7 +22,8 @@
     "ge:badges": "jest-coverage-badges --output badges",
     "migrate:reset": "npx sequelize db:migrate:undo:all --url $DATABASE_URL && yarn migrate",
     "migrate": "npx sequelize db:migrate --url $DATABASE_URL",
-    "seed": "npx sequelize db:seed:all --url $DATABASE_URL"
+    "seed": "npx sequelize db:seed:all --url $DATABASE_URL",
+    "swagger-autogen": "node src/services/swagger.js"
   },
   "devDependencies": {
     "jest": "^27.4.5",
