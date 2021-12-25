@@ -1,5 +1,6 @@
 "use strict";
 const { client } = require("../services/elasticsearch");
+const { scanFiles } = require("../services/readfile");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -76,6 +77,19 @@ module.exports = {
             body: user,
           },
           (error) => error && console.log({ error, user })
+        )
+      )
+    );
+    const photos = await scanFiles();
+    await Promise.all(
+      photos.map((photo) =>
+        client.index(
+          {
+            index: "elastic_photo",
+            type: "type_elastic_photo",
+            body: photo,
+          },
+          (error) => error && console.log({ error, photo })
         )
       )
     );

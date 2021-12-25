@@ -3,6 +3,7 @@ const ProductController = require("./controllers/ProductController");
 const UserController = require("./controllers/UserController");
 var fs = require("fs");
 const app = express();
+const { scanFiles } = require("./services/readfile");
 
 app.use(express.json());
 app.set('view engine', 'ejs');
@@ -17,6 +18,12 @@ app.use((req, res, next) => {
 
 app.use("/produtos", ProductController);
 app.use("/usuarios", UserController);
+
+app.get("/files", async (req, res) => {
+  // Photos.findAll({ offset: 0, limit: 20 });
+  const files = await scanFiles();
+  res.json(files);
+});
 
 app.get("/:template?", (req, res) => {
   const { template } = req.params;
