@@ -1,15 +1,6 @@
 const { opendir, readFile } = require("fs/promises");
 const { existsSync } = require("fs");
-const { v4:uuid } = require("uuid");
-
-/**
- *
- * @returns autocomplete
- * @function ElasticSearch
- */
-
-const pathGoogle =
-  "/run/media/jhon/9d646588-db28-48af-9599-079c6a24c744/googlePhotos/Takeout/Google Fotos";
+const { v4: uuid } = require("uuid");
 
 const constructorFile = (metadata, file, path) => ({
   id: uuid(),
@@ -21,24 +12,25 @@ const constructorFile = (metadata, file, path) => ({
   creationTime: metadata
     ? new Date(metadata.creationTime.timestamp * 1e3)
     : undefined,
-    createdAt: metadata
+  createdAt: metadata
     ? new Date(metadata.photoTakenTime.timestamp * 1e3)
     : new Date(),
-  deviceFolder:
-    metadata?.googlePhotosOrigin?.mobileUpload?.deviceFolder?.localFolderName,
-    updatedAt: metadata
+  deviceFolder: metadata
+    ? metadata.googlePhotosOrigin.mobileUpload.deviceFolder.localFolderName
+    : undefined,
+  updatedAt: metadata
     ? new Date(metadata.photoLastModifiedTime.timestamp * 1e3)
-    : new Date()
+    : new Date(),
 });
 
-const checkFileOrDir = async (path = pathGoogle) => {
+const scanFiles = async (path = process.env.photo_folder) => {
   let listFiles = [];
   const dir = await opendir(path);
   for await (const atual of dir) {
     const full_path = `${path}/${atual.name}`;
     if (["node_modules"].includes(atual.name)) return;
     if (atual.isDirectory()) {
-      const dir_files = await checkFileOrDir(full_path);
+      const dir_files = await scanFiles(full_path);
       dir_files && (listFiles = [...listFiles, ...dir_files]);
     } else {
       if (!atual.name.includes("json")) {
@@ -58,4 +50,4 @@ const checkFileOrDir = async (path = pathGoogle) => {
   return listFiles.filter((file) => file);
 };
 
-module.exports = { scanFiles: checkFileOrDir };
+module.exports = { scanFiles };

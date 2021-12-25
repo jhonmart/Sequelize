@@ -1,9 +1,9 @@
 const express = require("express");
 const ProductController = require("./controllers/ProductController");
 const UserController = require("./controllers/UserController");
+const PhotoController = require("./controllers/PhotoController");
 var fs = require("fs");
 const app = express();
-const { scanFiles } = require("./services/readfile");
 
 app.use(express.json());
 app.set('view engine', 'ejs');
@@ -18,12 +18,7 @@ app.use((req, res, next) => {
 
 app.use("/produtos", ProductController);
 app.use("/usuarios", UserController);
-
-app.get("/files", async (req, res) => {
-  // Photos.findAll({ offset: 0, limit: 20 });
-  const files = await scanFiles();
-  res.json(files);
-});
+app.use("/fotos", PhotoController);
 
 app.get("/:template?", (req, res) => {
   const { template } = req.params;

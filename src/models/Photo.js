@@ -32,6 +32,16 @@ class Photo extends Model {
       tableName: "photos",
     });
   }
+
+  getData() {
+    return {
+      id: this.id,
+      name: this.name,
+      url: this.url,
+      imageViews: this.imageViews,
+      title: this.title,
+    };
+  }
 };
 
 module.exports = Photo;
